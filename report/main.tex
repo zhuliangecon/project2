@@ -1,0 +1,137 @@
+\documentclass[12pt,a4paper]{article}
+
+% load packages
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage[left=2cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+
+% set code style
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+% set lst style
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   % 设置背景颜色
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,    % 使用等宽字体
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+\lstset{style=mystyle}
+
+
+\title{Project 1 Report for Probelm 1.1}
+\author{Zhu Liang}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\section{Project Description}
+% Describe the problem you are trying to solve.
+The objective of this project is to write a parallel program in C that prints ``Hello from $<$rank$>$ of $<$size$>$ processors." in order by processors' rank. 
+Test it for a system with at least 13 processors.
+
+\section{Algorithm Description}
+This program utilizes the MPI parallel programming library to execute the code in parallel.
+The primary objective of the program is to have each processor print its identifier in order. 
+To ensure the printing is in order, the program employs the \texttt{MPI\_Barrier} function to synchronize all processes.
+Then, each process will parallelly run the same for-loop and only print its identifier when its rank matches the loop index. 
+After printing, the program will synchronize all processes again to ensure the printing is in order.
+
+
+The pseudo-code of the program \texttt{hello.c} is shown in Algorithm 1. 
+This program is based on the coding from lecture slides \cite{deng2023principles} and compiled by the shell script \texttt{project1.sh}.
+
+\begin{algorithm}
+    \caption{Fix Hello Order}
+    \begin{algorithmic}[1]
+    \Procedure{FixHelloOrder}{}
+    \State \textbf{Initialize} MPI environment
+    \State \textbf{Get} rank and size of processes
+    \State \textbf{Synchronize} all processes
+    \For{each process}
+        \If{current process rank matches loop index}
+            \State \textbf{Print} ``Hello from $<$current rank$>$ of $<$size$>$ processors."
+        \EndIf
+        \State \textbf{Synchronize} all processes
+    \EndFor
+    \State \textbf{Finalize} MPI environment
+    \EndProcedure
+    \end{algorithmic}
+\end{algorithm}
+
+\section{Results}
+The program was executed on a \texttt{short-28cores} node by the shell script \texttt{project1.sh}. The output of the program is shown below.
+\begin{lstlisting}[language=bash]
+    Hello from 0 of 14 processors.
+    Hello from 1 of 14 processors.
+    Hello from 2 of 14 processors.
+    Hello from 3 of 14 processors.
+    Hello from 4 of 14 processors.
+    Hello from 5 of 14 processors.
+    Hello from 6 of 14 processors.
+    Hello from 7 of 14 processors.
+    Hello from 8 of 14 processors.
+    Hello from 9 of 14 processors.
+    Hello from 10 of 14 processors.
+    Hello from 11 of 14 processors.
+    Hello from 12 of 14 processors.
+    Hello from 13 of 14 processors.
+    
+    real	0m0.655s
+    user	0m0.476s
+    sys	0m5.228s
+    
+    
+\end{lstlisting}
+
+
+\section{Analysis}
+The program successfully prints the identifier of each process in order. 
+The program can be executed on a system with at least 13 processors. 
+
+% mention the general idea of the algorithm and why it reveals the difference  of parallel and serial
+The program run the same for-loop on each process and synchronize the processes after each iteration. 
+It ensures that each process will print its identifier in order.
+The program is parallel because each process runs the same for-loop in parallel.
+Although it is not the most efficient in term of performance, it is a simple way to solve the problem.
+
+\section*{File Notes}
+% mention folder name: project1; source code file name: hello.c; shell script file name: project1.sh
+% mention how to compile and run the program
+
+The source code of the program is in the \texttt{project1} folder. The source code file is named \texttt{hello.c}. The shell script file is named \texttt{project1.sh}. To compile and run the program, run the shell script \texttt{project1.sh} in Seawulf. The output will be printed on \texttt{output.txt}
+
+\begin{thebibliography}{1}
+
+    \bibitem{deng2023principles}
+    Yuefan Deng.
+    \textit{Principles of Parallel Computing: High-performance Computing and Algorithms for Big Data, Topic 3 Software \& MPI}.
+    2023, p.30.
+    
+\end{thebibliography}
+
+
+\end{document}
