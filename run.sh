@@ -1,6 +1,6 @@
 #!/bin/bash
 
 
-mpicc -o hello hello.c
+mpicc -o bcast_test main.c -lm
 
-time mpirun -np 4 ./hello
+mpirun -np 4 ./bcast_test
