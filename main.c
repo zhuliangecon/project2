@@ -6,7 +6,7 @@ int main(int argc, char **argv) {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
     // 为了示例，这里使用了一组N值。您可以根据需要进行修改。
-    int N_values[] = {1 << 10, 1 << 12, 1 << 14, 1 << 21};
+    int N_values[] = {1 << 10, 1 << 12, 1 << 14, 1 << 16};
 
     for (int i = 0; i < sizeof(N_values) / sizeof(int); i++) {
         int N = N_values[i];

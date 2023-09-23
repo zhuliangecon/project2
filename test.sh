@@ -1,7 +1,7 @@
 #!/bin/bash
 make
 
-for P in 4 7 28 37
+for P in 2 3 4 5
 do
     echo "Testing with $P processes..."
     mpirun -np $P ./bcast_test
