@@ -10,5 +10,6 @@
 // 函数声明
 float* generate_data(int N);
 double measure_time(float *data, int N, int (*bcast_function)(void*, int, MPI_Datatype, int, MPI_Comm));
+int get_n_from_size(int N);
 
 #endif // HEADERS_H

@@ -21,10 +21,18 @@ double measure_time(float *data, int N, int (*bcast_function)(void*, int, MPI_Da
     MPI_Barrier(MPI_COMM_WORLD); // 确保所有进程都已准备好
     double start_time = MPI_Wtime();
 
-    bcast_function(data, N, MPI_FLOAT, 0, MPI_COMM_WORLD); // 假设rank 0是ROOT
+    bcast_function(data, N, MPI_FLOAT, ROOT, MPI_COMM_WORLD); 
 
     MPI_Barrier(MPI_COMM_WORLD); // 确保所有进程都已完成广播操作
     double end_time = MPI_Wtime();
 
     return (end_time - start_time);
+}
+
+int get_n_from_size(int N) {
+    int n = 0;
+    while (N >>= 1) {
+        n++;
+    }
+    return n;
 }
