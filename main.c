@@ -5,7 +5,6 @@ int main(int argc, char **argv) {
     int rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-    // 为了示例，这里使用了一组N值。您可以根据需要进行修改。
     int N_values[] = {1 << 10, 1 << 12, 1 << 14, 1 << 16};
 
     for (int i = 0; i < sizeof(N_values) / sizeof(int); i++) {
@@ -21,7 +20,11 @@ int main(int argc, char **argv) {
             data = generate_data(N); // 修改generate_data，使其接受data指针并填充它
         }
         
-        double time_taken = measure_time(data, N, MPI_Bcast);
+        // 使用MPI_Bcast测量时间
+        double time_taken_mpi = measure_time(data, N, MPI_Bcast);
+        
+        // 使用MY_Bcast测量时间
+        double time_taken_my = measure_time(data, N, MY_Bcast);
         
         int num_procs;
         MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
@@ -29,7 +32,9 @@ int main(int argc, char **argv) {
         int n_value = get_n_from_size(N);
 
         if (rank == 0) {
-            printf("Time taken for N = 2^%d with %d cores: %f seconds\n", n_value, num_procs, time_taken);
+            printf("N = 2^%d, P = %d: \n",n_value, num_procs);
+            printf("%f seconds using MPI_Bcast \n", time_taken_mpi);
+            printf("%f seconds using MY_Bcast  \n",  time_taken_my);
         }
         free(data);  // 在所有进程中释放内存
     }

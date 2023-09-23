@@ -12,4 +12,6 @@ float* generate_data(int N);
 double measure_time(float *data, int N, int (*bcast_function)(void*, int, MPI_Datatype, int, MPI_Comm));
 int get_n_from_size(int N);
 
+int MY_Bcast(void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm);
+
 #endif // HEADERS_H
