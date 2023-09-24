@@ -1,14 +1,15 @@
-# 编译器和编译选项
+# comile setting
 CC = mpicc
 CFLAGS = -Wall
 
-# 目标文件
+# target file
 TARGET = bcast_test
 
-# 源文件
+# source files
 SOURCES = main.c functions.c
 OBJECTS = $(SOURCES:.c=.o)
 
+# make rule
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
@@ -17,5 +18,6 @@ $(TARGET): $(OBJECTS)
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+# clean rule
 clean:
 	rm -f $(OBJECTS) $(TARGET)
