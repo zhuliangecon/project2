@@ -12,7 +12,7 @@ project2/
 ├── main.c                 # Main program entry
 ├── functions.c            # Implementation of functions
 ├── make                   # Makefile for building the project
-├── test.sh                # Script for running on lcoal machine
+├── test.sh                # Script for testing on lcoal machine
 ├── project2.sh            # Script to execute the program on the cluster
 └── README.md              # This documentation file
 

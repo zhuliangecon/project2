@@ -114,13 +114,13 @@ the general pattern observed should remain similar across different runs.
     \hline
      & P = 4 & P = 7 & P = 28 & P = 37 \\ 
     \hline
-    $N = 2^{10}$ & 0.000111s & 0.000116s & 0.000126s & 0.000202s \\ 
+    $N = 2^{10}$ & 0.000126s & 0.000129s & 0.000156s & 0.000236s \\ 
     \hline
-    $N = 2^{12}$ & 0.000042s & 0.000089s & 0.000099s & 0.000115s \\ 
+    $N = 2^{12}$ & 0.000035s & 0.000109s & 0.000068s & 0.000107s \\ 
     \hline
-    $N = 2^{14}$ & 0.000074s & 0.000107s & 0.000260s & 0.000245s \\ 
+    $N = 2^{14}$ & 0.000066s & 0.000096s & 0.000257s & 0.000277s \\ 
     \hline
-    $N = 2^{16}$ & 0.000264s & 0.000298s & 0.000825s & 0.001087s \\ 
+    $N = 2^{16}$ & 0.000246s & 0.000330s & 0.000833s & 0.001005s \\ 
     \hline
     \end{tabular}
     \caption{Execution time using \texttt{MPI\_Bcast}}
@@ -132,18 +132,18 @@ the general pattern observed should remain similar across different runs.
     \hline
      & P = 4 & P = 7 & P = 28 & P = 37 \\ 
     \hline
-    $N = 2^{10}$ & 0.000054s & 0.000101s & 0.000593s & 0.000692s \\ 
+    $N = 2^{10}$ & 0.000048s & 0.000092s & 0.000588s & 0.000688s \\ 
     \hline
-    $N = 2^{12}$ & 0.000019s & 0.000032s & 0.000162s & 0.000230s \\ 
+    $N = 2^{12}$ & 0.000017s & 0.000034s & 0.000177s & 0.000226s \\ 
     \hline
-    $N = 2^{14}$ & 0.000064s & 0.000100s & 0.000344s & 0.000481s \\ 
+    $N = 2^{14}$ & 0.000050s & 0.000095s & 0.000361s & 0.000521s \\ 
     \hline
-    $N = 2^{16}$ & 0.000105s & 0.000169s & 0.001067s & 0.001473s \\ 
+    $N = 2^{16}$ & 0.000102s & 0.000169s & 0.001073s & 0.001517s \\ 
     \hline
     \end{tabular}
     \caption{Execution time using \texttt{MY\_Bcast}}
 \end{table}
-    
+
 
 \section{Analysis}
 
@@ -163,12 +163,14 @@ Several hypotheses might explain the observed performance trends:
     \item \textbf{Advanced Optimizations and Features:} \texttt{MPI\_Bcast} might employ various advanced optimizations and features. These optimizations might become evident in large-scale parallel environments but might not be as prominent with fewer core counts.
 \end{enumerate}
 
+
 \subsection{Conclusion}
-While both \texttt{MPI\_Bcast} and \texttt{MY\_Bcast} have their merits, the choice between them should be based on the specific use case and the hardware setup. It's pivotal to consider the number of cores and the specific nature of the task before deciding on the broadcasting function to use.
+The comparison offers valuable insights into parallel computing. 
+The key takeaway is the importance of understanding the relationship between software design and hardware. 
+It's evident that the right choice depends on the specific scenario and that no single solution is universally optimal. 
+
 \section*{File Notes}
 The source code of the program is in the \texttt{project2} folder. 
 For more details, please refer to the \texttt{README.md} file in the folder.
-
-
 
 \end{document}
