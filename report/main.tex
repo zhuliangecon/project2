@@ -6,6 +6,7 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{parskip}
 \usepackage{listings}
 \usepackage{hyperref}
 \usepackage{algorithm}
@@ -40,7 +41,7 @@
 \lstset{style=mystyle}
 
 
-\title{Project 1 Report for Probelm 1.1}
+\title{Project 2 Report for Probelm 2.1}
 \author{Zhu Liang}
 \date{\today}
 
@@ -49,89 +50,117 @@
 \maketitle
 
 \section{Project Description}
-% Describe the problem you are trying to solve.
-The objective of this project is to write a parallel program in C that prints ``Hello from $<$rank$>$ of $<$size$>$ processors." in order by processors' rank. 
-Test it for a system with at least 13 processors.
+In this project, we undertake two primary tasks. 
+The first task is to provide a detailed description of the algorithms behind five collective communication operations provided by MPI.
+The second task is an empirical comparison between the built-in \texttt{MPI\_Bcast} and a custom broadcast implementation named \texttt{MY\_Bcast()}.
 
 \section{Algorithm Description}
-This program utilizes the MPI parallel programming library to execute the code in parallel.
-The primary objective of the program is to have each processor print its identifier in order. 
-To ensure the printing is in order, the program employs the \texttt{MPI\_Barrier} function to synchronize all processes.
-Then, each process will parallelly run the same for-loop and only print its identifier when its rank matches the loop index. 
-After printing, the program will synchronize all processes again to ensure the printing is in order.
+\subsection{MPI Build-in Operations}
 
 
-The pseudo-code of the program \texttt{hello.c} is shown in Algorithm 1. 
-This program is based on the coding from lecture slides \cite{deng2023principles} and compiled by the shell script \texttt{project1.sh}.
+\textbf{\texttt{MPI\_Bcast()}}: This function broadcasts a message from the process with the designated root rank to all other processes in the communicator. All processes must call this function, with matching arguments.
 
+\textbf{\texttt{MPI\_Scatter()}}: This function distributes distinct blocks of data from the root process to each process in the communicator. The root sends data to itself as well as to the other processes.
+
+\textbf{\texttt{MPI\_Allgather()}}: Each process sends its own data to all other processes and gathers data from all processes. At the end, every process has the data from all the other processes.
+
+\textbf{\texttt{MPI\_Alltoall()}}: This function allows each process to send distinct data to every other process. It generalizes the functionality of both scatter and gather, with different data being sent to each process.
+
+\textbf{\texttt{MPI\_Reduce()}}: All processes in the communicator contribute their own data, which is combined (reduced) into a single result using a specified operation, like sum, max, etc. The result is stored on the root process.
+
+
+\subsection{Custom Broadcast Function: \texttt{MY\_Bcast()}}
+The \texttt{MY\_Bcast()} function is designed to mimic the MPI broadcast functionality using non-blocking send \texttt{MPI_Isend()} and receive \texttt{MPI_Irecv()} calls. 
+It works by designating one process as the root, which sends the content of its buffer to all other processes. 
+Each of the other processes waits to receive this content and store it in its own buffer.
 \begin{algorithm}
-    \caption{Fix Hello Order}
+    \caption{Custom Broadcast Function}
     \begin{algorithmic}[1]
-    \Procedure{FixHelloOrder}{}
-    \State \textbf{Initialize} MPI environment
+    \Procedure{MY\_ Bcast}{}
     \State \textbf{Get} rank and size of processes
-    \State \textbf{Synchronize} all processes
-    \For{each process}
-        \If{current process rank matches loop index}
-            \State \textbf{Print} ``Hello from $<$current rank$>$ of $<$size$>$ processors."
+        \If{current process rank is \textit{root}}
+            \For{all the other processes \textit{i}}
+                \State \textbf{Send} content of buffer to process \textit{i}
+            \EndFor
+        \Else
+            \State \textbf{Receive} content from \textit{root} process into buffer
         \EndIf
-        \State \textbf{Synchronize} all processes
-    \EndFor
-    \State \textbf{Finalize} MPI environment
+        
+        \State \Return MPI\_SUCCESS
     \EndProcedure
     \end{algorithmic}
 \end{algorithm}
 
-\section{Results}
-The program was executed on a \texttt{short-28cores} node by the shell script \texttt{project1.sh}. The output of the program is shown below.
-\begin{lstlisting}[language=bash]
-    Hello from 0 of 14 processors.
-    Hello from 1 of 14 processors.
-    Hello from 2 of 14 processors.
-    Hello from 3 of 14 processors.
-    Hello from 4 of 14 processors.
-    Hello from 5 of 14 processors.
-    Hello from 6 of 14 processors.
-    Hello from 7 of 14 processors.
-    Hello from 8 of 14 processors.
-    Hello from 9 of 14 processors.
-    Hello from 10 of 14 processors.
-    Hello from 11 of 14 processors.
-    Hello from 12 of 14 processors.
-    Hello from 13 of 14 processors.
-    
-    real	0m0.655s
-    user	0m0.476s
-    sys	0m5.228s
-    
-    
-\end{lstlisting}
 
+\section{Results}
+
+In the following tables, 
+we present the execution times for two different broadcast implementations: 
+\texttt{MPI\_Bcast} and \texttt{MY\_Bcast}. 
+It is essential to note that while individual run times might vary depending on the specific runtime environment, 
+the general pattern observed should remain similar across different runs.
+
+\begin{table}[!htb]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+    \hline
+     & P = 4 & P = 7 & P = 28 & P = 37 \\ 
+    \hline
+    $N = 2^{10}$ & 0.000111s & 0.000116s & 0.000126s & 0.000202s \\ 
+    \hline
+    $N = 2^{12}$ & 0.000042s & 0.000089s & 0.000099s & 0.000115s \\ 
+    \hline
+    $N = 2^{14}$ & 0.000074s & 0.000107s & 0.000260s & 0.000245s \\ 
+    \hline
+    $N = 2^{16}$ & 0.000264s & 0.000298s & 0.000825s & 0.001087s \\ 
+    \hline
+    \end{tabular}
+    \caption{Execution time using \texttt{MPI\_Bcast}}
+\end{table}
+
+\begin{table}[!htb]
+    \centering
+    \begin{tabular}{|c|c|c|c|c|}
+    \hline
+     & P = 4 & P = 7 & P = 28 & P = 37 \\ 
+    \hline
+    $N = 2^{10}$ & 0.000054s & 0.000101s & 0.000593s & 0.000692s \\ 
+    \hline
+    $N = 2^{12}$ & 0.000019s & 0.000032s & 0.000162s & 0.000230s \\ 
+    \hline
+    $N = 2^{14}$ & 0.000064s & 0.000100s & 0.000344s & 0.000481s \\ 
+    \hline
+    $N = 2^{16}$ & 0.000105s & 0.000169s & 0.001067s & 0.001473s \\ 
+    \hline
+    \end{tabular}
+    \caption{Execution time using \texttt{MY\_Bcast}}
+\end{table}
+    
 
 \section{Analysis}
-The program successfully prints the identifier of each process in order. 
-The program can be executed on a system with at least 13 processors. 
 
-% mention the general idea of the algorithm and why it reveals the difference  of parallel and serial
-The program run the same for-loop on each process and synchronize the processes after each iteration. 
-It ensures that each process will print its identifier in order.
-The program is parallel because each process runs the same for-loop in parallel.
-Although it is not the most efficient in term of performance, it is a simple way to solve the problem.
+In this section, we delve into the observed performance variations between the two broadcasting functions, \texttt{MPI\_Bcast} and \texttt{MY\_Bcast}. Our primary objective is to decipher the underlying reasons behind their distinct behaviors under varying conditions.
 
-\section*{File Notes}
-% mention folder name: project1; source code file name: hello.c; shell script file name: project1.sh
-% mention how to compile and run the program
+\subsection{Summary of Results}
+From the results presented in the previous section, it is evident that \texttt{MY\_Bcast} tends to perform better with a smaller number of cores, while \texttt{MPI\_Bcast} shows superior performance as the number of cores increases.
 
-The source code of the program is in the \texttt{project1} folder. The source code file is named \texttt{hello.c}. The shell script file is named \texttt{project1.sh}. To compile and run the program, run the shell script \texttt{project1.sh} in Seawulf. The output will be printed on \texttt{output.txt}
+\subsection{Possible Explanations}
+Several hypotheses might explain the observed performance trends:
 
-\begin{thebibliography}{1}
-
-    \bibitem{deng2023principles}
-    Yuefan Deng.
-    \textit{Principles of Parallel Computing: High-performance Computing and Algorithms for Big Data, Topic 3 Software \& MPI}.
-    2023, p.30.
+\begin{enumerate}
+    \item \textbf{Simplicity of Implementation:} The \texttt{MY\_Bcast} is simpler, without involving hierarchical broadcasting, considerations for network topology, or other advanced features. In situations with fewer cores, this simplicity might lead to higher efficiency.
     
-\end{thebibliography}
+    \item \textbf{Startup Overhead:} The \texttt{MPI\_Bcast} operation might have certain startup overheads, especially when setting up the broadcast operation or initializing network communications. As the number of cores increases, these overheads get amortized over more parallel work, becoming a smaller concern. However, with fewer cores, these overheads might be more pronounced.
+    
+    \item \textbf{Advanced Optimizations and Features:} \texttt{MPI\_Bcast} might employ various advanced optimizations and features. These optimizations might become evident in large-scale parallel environments but might not be as prominent with fewer core counts.
+\end{enumerate}
+
+\subsection{Conclusion}
+While both \texttt{MPI\_Bcast} and \texttt{MY\_Bcast} have their merits, the choice between them should be based on the specific use case and the hardware setup. It's pivotal to consider the number of cores and the specific nature of the task before deciding on the broadcasting function to use.
+\section*{File Notes}
+The source code of the program is in the \texttt{project2} folder. 
+For more details, please refer to the \texttt{README.md} file in the folder.
+
 
 
 \end{document}

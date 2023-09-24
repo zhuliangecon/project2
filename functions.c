@@ -39,17 +39,22 @@ int get_n_from_size(int N) {
 // My implementation of MPI_Bcast
 int MY_Bcast(void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm) {
     int rank, size;
+    MPI_Request request;  // Used to capture the request object for non-blocking operations
+    MPI_Status status;    // Used to wait for non-blocking operations to complete
+
     MPI_Comm_rank(comm, &rank);
     MPI_Comm_size(comm, &size);
 
     if (rank == root) {
         for (int i = 0; i < size; i++) {
             if (i != root) {
-                MPI_Send(buffer, count, datatype, i, 0, comm);
+                MPI_Isend(buffer, count, datatype, i, 0, comm, &request);
+                MPI_Wait(&request, &status); // Ensure that the non-blocking send operation completes before moving to the next iteration
             }
         }
     } else {
-        MPI_Recv(buffer, count, datatype, root, 0, comm, MPI_STATUS_IGNORE);
+        MPI_Irecv(buffer, count, datatype, root, 0, comm, &request);
+        MPI_Wait(&request, &status);  // Wait for the non-blocking receive to complete
     }
 
     return MPI_SUCCESS;
