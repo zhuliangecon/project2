@@ -52,10 +52,13 @@
 \section{Project Description}
 In this project, we undertake two primary tasks. 
 The first task is to provide a detailed description of the algorithms behind five collective communication operations provided by MPI.
+The description are provided in Section \ref{sec:mpi_buildin}.
 The second task is an empirical comparison between the built-in \texttt{MPI\_Bcast} and a custom broadcast implementation named \texttt{MY\_Bcast()}.
+
 
 \section{Algorithm Description}
 \subsection{MPI Build-in Operations}
+\label{sec:mpi_buildin}
 
 
 \textbf{\texttt{MPI\_Bcast()}}: This function broadcasts a message from the process with the designated root rank to all other processes in the communicator. All processes must call this function, with matching arguments.
@@ -70,9 +73,14 @@ The second task is an empirical comparison between the built-in \texttt{MPI\_Bca
 
 
 \subsection{Custom Broadcast Function: \texttt{MY\_Bcast()}}
-The \texttt{MY\_Bcast()} function is designed to mimic the MPI broadcast functionality using non-blocking send \texttt{MPI_Isend()} and receive \texttt{MPI_Irecv()} calls. 
+The \texttt{MY\_Bcast()} function is designed to mimic the MPI broadcast functionality using non-blocking send and receive  calls. 
 It works by designating one process as the root, which sends the content of its buffer to all other processes. 
 Each of the other processes waits to receive this content and store it in its own buffer.
+
+For more details on the project structure and the implementation, please refer to the \texttt{README.md} file in the \texttt{project2} folder.
+
+The source code of the \texttt{MY\_Bcast()} function is included in \texttt{functions.c} file. 
+The pseudocode is shown below.
 \begin{algorithm}
     \caption{Custom Broadcast Function}
     \begin{algorithmic}[1]
