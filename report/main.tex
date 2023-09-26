@@ -73,27 +73,38 @@ The second task is an empirical comparison between the built-in \texttt{MPI\_Bca
 
 
 \subsection{Custom Broadcast Function: \texttt{MY\_Bcast()}}
-The \texttt{MY\_Bcast()} function is designed to mimic the MPI broadcast functionality using non-blocking send and receive  calls. 
-It works by designating one process as the root, which sends the content of its buffer to all other processes. 
-Each of the other processes waits to receive this content and store it in its own buffer.
+In large-scale parallel computations, efficient data transfer across processes is paramount. 
+A simple broadcast approaches, 
+which involve a root process sending messages to every other process sequentially, 
+can be inefficient, 
+especially when the number of processes grows, 
+leading to a linear time complexity of $O(n)$.
 
-For more details on the project structure and the implementation, please refer to the \texttt{README.md} file in the \texttt{project2} folder.
+To enhance this, 
+we leverage it with a binary tree structure. 
+Here, each process communicates only with its parent and potential left and right children (when children exist). 
+Thus, it works even when the number of processes is not a power of 2.
+The root initiates the broadcast, and the message cascades down the tree, reaching all processes.
+This approach reduces the time complexity from $O(n)$ to $O(log(n))$.
 
-The source code of the \texttt{MY\_Bcast()} function is included in \texttt{functions.c} file. 
+For more details on the project structure and the implementation, 
+please refer to the \texttt{README.md} file in the \texttt{project2} folder.
+
 The pseudocode is shown below.
 \begin{algorithm}
-    \caption{Custom Broadcast Function}
+    \caption{Custom Broadcast Function Using Binary Tree}
     \begin{algorithmic}[1]
     \Procedure{MY\_ Bcast}{}
     \State \textbf{Get} rank and size of processes
-        \If{current process rank is \textit{root}}
-            \For{all the other processes \textit{i}}
-                \State \textbf{Send} content of buffer to process \textit{i}
-            \EndFor
-        \Else
-            \State \textbf{Receive} content from \textit{root} process into buffer
+        \If{current process rank is not \textit{root}}
+            \State \textbf{Receive} content of buffer from \textit{parent} 
         \EndIf
-        
+        \If{left child exists}
+            \State \textbf{Send} content of buffer to \textit{left child} 
+        \EndIf
+        \If{right child exists}
+            \State \textbf{Send} content of buffer to \textit{right child} 
+        \EndIf
         \State \Return MPI\_SUCCESS
     \EndProcedure
     \end{algorithmic}
@@ -114,17 +125,17 @@ the general pattern observed should remain similar across different runs.
     \hline
     & P = 4 & P = 7 & P = 28 & P = 37 \\
     \hline
-    $N = 2^{10}$ & 0.000016s & 0.000015s & 0.000057s & 0.000092s \\
+    $N = 2^{10}$ & 0.000010s & 0.000059s & 0.000045s & 0.000069s \\
     \hline
-    $N = 2^{12}$ & 0.000013s & 0.000023s & 0.000076s & 0.000089s \\
+    $N = 2^{12}$ & 0.000023s & 0.000054s & 0.000061s & 0.000063s \\
     \hline
-    $N = 2^{14}$ & 0.000029s & 0.000067s & 0.000128s & 0.000241s \\
+    $N = 2^{14}$ & 0.000036s & 0.000057s & 0.000151s & 0.000181s \\
     \hline
-    $N = 2^{16}$ & 0.000095s & 0.000164s & 0.000356s & 0.000655s \\
+    $N = 2^{16}$ & 0.000120s & 0.000125s & 0.000454s & 0.000526s \\
     \hline
     \end{tabular}
     \caption{Execution time using \texttt{MPI\_Bcast}}
-\end{table}
+    \end{table}
 
 \begin{table}[!htb]
     \centering
@@ -132,41 +143,24 @@ the general pattern observed should remain similar across different runs.
     \hline
     & P = 4 & P = 7 & P = 28 & P = 37 \\
     \hline
-    $N = 2^{10}$ & 0.000014s & 0.000026s & 0.000158s & 0.000218s \\
+    $N = 2^{10}$ & 0.000012s & 0.000020s & 0.000057s & 0.000086s \\
     \hline
-    $N = 2^{12}$ & 0.000015s & 0.000032s & 0.000194s & 0.000293s \\
+    $N = 2^{12}$ & 0.000010s & 0.000024s & 0.000072s & 0.000091s \\
     \hline
-    $N = 2^{14}$ & 0.000031s & 0.000060s & 0.000357s & 0.000582s \\
+    $N = 2^{14}$ & 0.000021s & 0.000058s & 0.000123s & 0.000145s \\
     \hline
-    $N = 2^{16}$ & 0.000086s & 0.000175s & 0.001076s & 0.001689s \\
+    $N = 2^{16}$ & 0.000057s & 0.000165s & 0.000385s & 0.000416s \\
     \hline
     \end{tabular}
     \caption{Execution time using \texttt{MY\_Bcast}}
-\end{table}
+    \end{table}
 
 \section{Analysis}
 
-In this section, we delve into the observed performance variations between the two broadcasting functions, \texttt{MPI\_Bcast} and \texttt{MY\_Bcast}. Our primary objective is to decipher the underlying reasons behind their distinct behaviors under varying conditions.
-
-\subsection{Summary of Results}
-From the results presented in the previous section, it is evident that \texttt{MY\_Bcast} tends to perform better with a smaller number of cores, while \texttt{MPI\_Bcast} shows superior performance as the number of cores increases.
-
-\subsection{Possible Explanations}
-Several hypotheses might explain the observed performance trends:
-
-\begin{enumerate}
-    \item \textbf{Simplicity of Implementation:} The \texttt{MY\_Bcast} is simpler, without involving hierarchical broadcasting, considerations for network topology, or other advanced features. In situations with fewer cores, this simplicity might lead to higher efficiency.
-    
-    \item \textbf{Startup Overhead:} The \texttt{MPI\_Bcast} operation might have certain startup overheads, especially when setting up the broadcast operation or initializing network communications. As the number of cores increases, these overheads get amortized over more parallel work, becoming a smaller concern. However, with fewer cores, these overheads might be more pronounced.
-    
-    \item \textbf{Advanced Optimizations and Features:} \texttt{MPI\_Bcast} might employ various advanced optimizations and features. These optimizations might become evident in large-scale parallel environments but might not be as prominent with fewer core counts.
-\end{enumerate}
-
-
-\subsection{Conclusion}
-The comparison offers valuable insights into parallel computing. 
-The key takeaway is the importance of understanding the relationship between software design and hardware. 
-It's evident that the right choice depends on the specific scenario and that no single solution is universally optimal. 
+Based on the empirical results obtained, 
+both \texttt{MPI\_Bcast()} and our custom implementation \texttt{MY\_Bcast()} demonstrate closely matched performance. 
+This is a significant observation given that the \texttt{MY\_Bcast()} function was optimized to operate in \(O(\log(n))\) time complexity, 
+using a binary tree approach.
 
 \section*{File Notes}
 The source code of the program is in the \texttt{project2} folder. 

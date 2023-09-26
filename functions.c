@@ -36,26 +36,37 @@ int get_n_from_size(int N) {
     }
     return n;
 }
-// My implementation of MPI_Bcast
+// My implementation of MPI_Bcast using a binary tree
 int MY_Bcast(void* buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm) {
     int rank, size;
-    MPI_Request request;  // Used to capture the request object for non-blocking operations
-    MPI_Status status;    // Used to wait for non-blocking operations to complete
+    MPI_Request request;
+    MPI_Status status;
 
     MPI_Comm_rank(comm, &rank);
     MPI_Comm_size(comm, &size);
 
-    if (rank == root) {
-        for (int i = 0; i < size; i++) {
-            if (i != root) {
-                MPI_Isend(buffer, count, datatype, i, 0, comm, &request);
-                MPI_Wait(&request, &status); // Ensure that the non-blocking send operation completes before moving to the next iteration
-            }
-        }
-    } else {
-        MPI_Irecv(buffer, count, datatype, root, 0, comm, &request);
-        MPI_Wait(&request, &status);  // Wait for the non-blocking receive to complete
+    if (rank != root) {
+        // Receive from the parent
+        int src = (rank - 1) / 2;
+        MPI_Irecv(buffer, count, datatype, src, 0, comm, &request);
+        MPI_Wait(&request, &status);
+    }
+
+    // Send to left child
+    int left_child = 2 * rank + 1;
+    if (left_child < size) {
+        MPI_Isend(buffer, count, datatype, left_child, 0, comm, &request);
+        MPI_Wait(&request, &status);
+    }
+
+    // Send to right child
+    int right_child = 2 * rank + 2;
+    if (right_child < size) {
+        MPI_Isend(buffer, count, datatype, right_child, 0, comm, &request);
+        MPI_Wait(&request, &status);
     }
 
     return MPI_SUCCESS;
 }
+
+
