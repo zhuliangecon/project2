@@ -20,6 +20,10 @@ int main(int argc, char **argv) {
             data = generate_data(N); // generate data in root process
         }
         
+        // Pre-warming phase, to avoid cold-start effects
+        measure_time(data, N, MPI_Bcast);
+        measure_time(data, N, MY_Bcast);
+
         // measure broadcast time on root using MPI_Bcast
         double time_taken_mpi = measure_time(data, N, MPI_Bcast);
         

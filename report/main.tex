@@ -112,15 +112,15 @@ the general pattern observed should remain similar across different runs.
     \centering
     \begin{tabular}{|c|c|c|c|c|}
     \hline
-     & P = 4 & P = 7 & P = 28 & P = 37 \\ 
+    & P = 4 & P = 7 & P = 28 & P = 37 \\
     \hline
-    $N = 2^{10}$ & 0.000126s & 0.000129s & 0.000156s & 0.000236s \\ 
+    $N = 2^{10}$ & 0.000016s & 0.000015s & 0.000057s & 0.000092s \\
     \hline
-    $N = 2^{12}$ & 0.000035s & 0.000109s & 0.000068s & 0.000107s \\ 
+    $N = 2^{12}$ & 0.000013s & 0.000023s & 0.000076s & 0.000089s \\
     \hline
-    $N = 2^{14}$ & 0.000066s & 0.000096s & 0.000257s & 0.000277s \\ 
+    $N = 2^{14}$ & 0.000029s & 0.000067s & 0.000128s & 0.000241s \\
     \hline
-    $N = 2^{16}$ & 0.000246s & 0.000330s & 0.000833s & 0.001005s \\ 
+    $N = 2^{16}$ & 0.000095s & 0.000164s & 0.000356s & 0.000655s \\
     \hline
     \end{tabular}
     \caption{Execution time using \texttt{MPI\_Bcast}}
@@ -130,20 +130,19 @@ the general pattern observed should remain similar across different runs.
     \centering
     \begin{tabular}{|c|c|c|c|c|}
     \hline
-     & P = 4 & P = 7 & P = 28 & P = 37 \\ 
+    & P = 4 & P = 7 & P = 28 & P = 37 \\
     \hline
-    $N = 2^{10}$ & 0.000048s & 0.000092s & 0.000588s & 0.000688s \\ 
+    $N = 2^{10}$ & 0.000014s & 0.000026s & 0.000158s & 0.000218s \\
     \hline
-    $N = 2^{12}$ & 0.000017s & 0.000034s & 0.000177s & 0.000226s \\ 
+    $N = 2^{12}$ & 0.000015s & 0.000032s & 0.000194s & 0.000293s \\
     \hline
-    $N = 2^{14}$ & 0.000050s & 0.000095s & 0.000361s & 0.000521s \\ 
+    $N = 2^{14}$ & 0.000031s & 0.000060s & 0.000357s & 0.000582s \\
     \hline
-    $N = 2^{16}$ & 0.000102s & 0.000169s & 0.001073s & 0.001517s \\ 
+    $N = 2^{16}$ & 0.000086s & 0.000175s & 0.001076s & 0.001689s \\
     \hline
     \end{tabular}
     \caption{Execution time using \texttt{MY\_Bcast}}
 \end{table}
-
 
 \section{Analysis}
 
