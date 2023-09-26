@@ -14,6 +14,7 @@ project2/
 ├── make                   # Makefile for building the project
 ├── test.sh                # Script for testing on lcoal machine
 ├── project2.sh            # Script to execute the program on the cluster
+├── output.txt             # Output file
 └── README.md              # This documentation file
 
 ```
