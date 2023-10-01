@@ -7,6 +7,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{parskip}
+\usepackage{tikz}
 \usepackage{listings}
 \usepackage{hyperref}
 \usepackage{algorithm}
@@ -85,6 +86,7 @@ we leverage it with a binary tree structure.
 Here, each process communicates only with its parent and potential left and right children (when children exist). 
 Thus, it works even when the number of processes is not a power of 2.
 The root initiates the broadcast, and the message cascades down the tree, reaching all processes.
+Pleasee refer to Figure \ref{fig:binary_tree} for an illustration of the binary tree structure when $P = 4$.
 This approach reduces the time complexity from $O(n)$ to $O(log(n))$.
 
 For more details on the project structure and the implementation, 
@@ -109,8 +111,42 @@ The pseudocode is shown below.
     \EndProcedure
     \end{algorithmic}
 \end{algorithm}
+\begin{figure}
+    \centering
+    \begin{tikzpicture}[
+        every node/.style = {circle, draw},
+        missing/.style={fill=gray!50, label=center:{\textbf{X}}},
+        level distance = 10mm,
+        level 1/.style = {sibling distance=40mm},
+        level 2/.style = {sibling distance=20mm},
+        level 3/.style = {sibling distance=10mm},
+      ]
+      
+      \node {0}
+        child {node {1}
+          child {node {3}
+            child {node[missing] {}}
+            child {node[missing] {}}
+          }
+          child {node {4}
+            child {node[missing] {}}
+            child {node[missing] {}}
+          }
+        }
+        child {node {2}
+          child {node[missing] {}}
+          child {node[missing] {}}};
+      
+    \end{tikzpicture}
+    \caption{Binary Tree Structure when $P = 4$}
+    \label{fig:binary_tree}
+\end{figure}
 
 
+  
+  
+  
+  
 \section{Results}
 
 In the following tables, 
