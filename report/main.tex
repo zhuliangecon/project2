@@ -115,32 +115,33 @@ The pseudocode is shown below.
     \centering
     \begin{tikzpicture}[
         every node/.style = {circle, draw},
-        missing/.style={fill=gray!50, label=center:{\textbf{X}}},
-        level distance = 10mm,
+        missing/.style={fill=gray!50, label=center:{\textbf{X}}, edge from parent/.style={draw=none}},
+        level distance = 15mm,
         level 1/.style = {sibling distance=40mm},
         level 2/.style = {sibling distance=20mm},
         level 3/.style = {sibling distance=10mm},
       ]
       
       \node {0}
-        child {node {1}
-          child {node {3}
-            child {node[missing] {}}
-            child {node[missing] {}}
+        child[->] {node {1}
+          child[->] {node {3}
+            child[missing] {}
+            child[missing] {}
           }
-          child {node {4}
-            child {node[missing] {}}
-            child {node[missing] {}}
+          child[->] {node {4}
+            child[missing] {}
+            child[missing] {}
           }
         }
-        child {node {2}
-          child {node[missing] {}}
-          child {node[missing] {}}};
+        child[->] {node {2}
+          child[missing] {}
+          child[missing] {}};
       
     \end{tikzpicture}
     \caption{Binary Tree Structure when $P = 4$}
     \label{fig:binary_tree}
 \end{figure}
+
 
 
   

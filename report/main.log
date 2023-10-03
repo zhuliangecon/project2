@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.8.12)  1 OCT 2023 15:38
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2023.8.12)  3 OCT 2023 09:51
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -596,31 +596,31 @@ Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on inp
 pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.200 
+l.201 
       
 pdfTeX warning (ext4): destination with the same identifier (name{table.1}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.200 
+l.201 
       ] [3
 pdfTeX warning (ext4): destination with the same identifier (name{table.2}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.205 \end{document}
+l.206 \end{document}
                     ] (./main.aux)
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: 6A3DCD142C9B028ADE859C7C5062F623;891.
  ) 
 Here is how much of TeX's memory you used:
- 22892 strings out of 476025
- 419411 string characters out of 5790017
- 1871388 words of memory out of 5000000
- 42967 multiletter control sequences out of 15000+600000
+ 22911 strings out of 476025
+ 419798 string characters out of 5790017
+ 1868388 words of memory out of 5000000
+ 42986 multiletter control sequences out of 15000+600000
  522036 words of font info for 70 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 84i,15n,80p,546b,1325s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,13n,80p,546b,1306s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmcsc10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive/2023/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on main.pdf (3 pages, 113768 bytes).
+Output written on main.pdf (3 pages, 112755 bytes).
 PDF statistics:
  104 PDF objects out of 1000 (max. 8388607)
  80 compressed objects within 1 object stream
