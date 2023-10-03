@@ -84,9 +84,10 @@ leading to a linear time complexity of $O(n)$.
 To enhance this, 
 we leverage it with a binary tree structure. 
 Here, each process communicates only with its parent and potential left and right children (when children exist). 
-Thus, it works even when the number of processes is not a power of 2.
+Thus, it works even when the number of processes is a full binary tree.
 The root initiates the broadcast, and the message cascades down the tree, reaching all processes.
-Pleasee refer to Figure \ref{fig:binary_tree} for an illustration of the binary tree structure when $P = 4$.
+Pleasee refer to Figure \ref{fig:binary_tree} for an illustration of the binary tree structure when $P = 4$,
+which is not a full binary tree.
 This approach reduces the time complexity from $O(n)$ to $O(log(n))$.
 
 For more details on the project structure and the implementation, 
@@ -101,21 +102,23 @@ The pseudocode is shown below.
         \If{current process rank is not \textit{root}}
             \State \textbf{Receive} content of buffer from \textit{parent} 
         \EndIf
-        \If{left child exists}
+        \If{\textit{left child} exists}
             \State \textbf{Send} content of buffer to \textit{left child} 
         \EndIf
-        \If{right child exists}
+        \If{\textit{right child}  exists}
             \State \textbf{Send} content of buffer to \textit{right child} 
         \EndIf
         \State \Return MPI\_SUCCESS
     \EndProcedure
     \end{algorithmic}
 \end{algorithm}
+
 \begin{figure}
     \centering
     \begin{tikzpicture}[
         every node/.style = {circle, draw},
         missing/.style={fill=gray!50, label=center:{\textbf{X}}, edge from parent/.style={draw=none}},
+        phantom/.style={draw=none, edge from parent/.style={draw=none}},
         level distance = 15mm,
         level 1/.style = {sibling distance=40mm},
         level 2/.style = {sibling distance=20mm},
@@ -128,10 +131,7 @@ The pseudocode is shown below.
             child[missing] {}
             child[missing] {}
           }
-          child[->] {node {4}
-            child[missing] {}
-            child[missing] {}
-          }
+          child[phantom] {}
         }
         child[->] {node {2}
           child[missing] {}
@@ -141,10 +141,6 @@ The pseudocode is shown below.
     \caption{Binary Tree Structure when $P = 4$}
     \label{fig:binary_tree}
 \end{figure}
-
-
-
-  
   
   
   
