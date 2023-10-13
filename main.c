@@ -6,7 +6,7 @@ int main(int argc, char **argv) {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
     // set N values in powers of 2
-    int N_values[] = {1 << 10, 1 << 12, 1 << 14, 1 << 16};
+    int N_values[] = {1 << 10, 1 << 12, 1 << 14, 1 << 20};
 
     for (int i = 0; i < sizeof(N_values) / sizeof(int); i++) {
         int N = N_values[i];
@@ -17,9 +17,9 @@ int main(int argc, char **argv) {
         }
         
         if (rank == 0) {
-            data = generate_data(N); // generate data in root process
+            generate_data(data, N); // generate data in root process
         }
-        
+
         // Pre-warming phase, to avoid cold-start effects
         measure_time(data, N, MPI_Bcast);
         measure_time(data, N, MY_Bcast);

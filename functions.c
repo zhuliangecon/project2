@@ -1,29 +1,23 @@
 #include "headers.h"
 // function to generate random data
-float* generate_data(int N) {
-    float *data = (float*)malloc(N * sizeof(float));
-    if(data == NULL) {
-        fprintf(stderr, "Memory allocation failed for N = %d\n", N);
-        MPI_Abort(MPI_COMM_WORLD, EXIT_FAILURE);
+void generate_data(float* data, int N) {
+    for (int i = 0; i < N; i++) {
+        data[i] = (float)rand() / (float)(RAND_MAX);
     }
-    
-    for(int i = 0; i < N; i++) {
-        data[i] = (float)rand() / RAND_MAX; // generate random data
-    }
-
-    return data;
 }
-// function to measure broadcast time
+// Function to measure broadcast time with guaranteed synchronization of processes
 double measure_time(float *data, int N, int (*bcast_function)(void*, int, MPI_Datatype, int, MPI_Comm)) {
     int rank;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-    MPI_Barrier(MPI_COMM_WORLD); // synchronize all processes at the start of the broadcast
+    // Synchronize all processes at the start of the broadcast
+    MPI_Barrier(MPI_COMM_WORLD); 
     double start_time = MPI_Wtime();
 
     bcast_function(data, N, MPI_FLOAT, ROOT, MPI_COMM_WORLD); 
 
-    MPI_Barrier(MPI_COMM_WORLD); // synchronize all processes at the end of the broadcast
+    // Synchronize all processes at the end of the broadcast
+    MPI_Barrier(MPI_COMM_WORLD);
     double end_time = MPI_Wtime();
 
     return (end_time - start_time);

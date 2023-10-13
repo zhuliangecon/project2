@@ -8,7 +8,7 @@
 #define ROOT 0  // set root process
 
 // function declarations
-float* generate_data(int N);
+void generate_data(float* data, int N);
 double measure_time(float *data, int N, int (*bcast_function)(void*, int, MPI_Datatype, int, MPI_Comm));
 int get_n_from_size(int N);
 
