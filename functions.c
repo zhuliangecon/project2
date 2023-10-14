@@ -5,24 +5,44 @@ void generate_data(float* data, int N) {
         data[i] = (float)rand() / (float)(RAND_MAX);
     }
 }
-// Function to measure broadcast time with guaranteed synchronization of processes
+// function to measure broadcast time 
 double measure_time(float *data, int N, int (*bcast_function)(void*, int, MPI_Datatype, int, MPI_Comm)) {
-    int rank;
-    MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 
-    // Synchronize all processes at the start of the broadcast
-    MPI_Barrier(MPI_COMM_WORLD); 
+    // Warmup
+    int warmup_iterations = 3;
+    for (int i = 0; i < warmup_iterations; ++i) {
+        MPI_Bcast(data, N, MPI_FLOAT, 0, MPI_COMM_WORLD);
+        MPI_Barrier(MPI_COMM_WORLD);
+    }  
+
+    // Synchronize all processes before starting the timer
+    MPI_Barrier(MPI_COMM_WORLD);
     double start_time = MPI_Wtime();
 
-    bcast_function(data, N, MPI_FLOAT, ROOT, MPI_COMM_WORLD); 
+    // Repeat the broadcast iterations times.
+    int iterations = 1000;
+    for (int i = 0; i < iterations; ++i) {
 
-    // Synchronize all processes at the end of the broadcast
+        bcast_function(data, N, MPI_FLOAT, ROOT, MPI_COMM_WORLD); 
+
+        // Synchronize all processes at the end of each broadcast
+        MPI_Barrier(MPI_COMM_WORLD);
+    }
+
+    // Synchronize all processes at the end of all broadcasts and stop the timer
     MPI_Barrier(MPI_COMM_WORLD);
     double end_time = MPI_Wtime();
 
-    return (end_time - start_time);
+
+    // Calculate and return the total time.
+    double total_time = end_time - start_time;
+
+    // Return the average time per broadcast
+    return (total_time / iterations);
 }
-// function to get n value from size
+
+
+// Function to get n value from size
 int get_n_from_size(int N) {
     int n = 0;
     while (N >>= 1) {

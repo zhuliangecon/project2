@@ -145,55 +145,113 @@ The pseudocode is shown below.
   
   
 \section{Results}
-
 In the following tables, 
-we present the execution times for two different broadcast implementations: 
-\texttt{MPI\_Bcast} and \texttt{MY\_Bcast}. 
-It is essential to note that while individual run times might vary depending on the specific runtime environment, 
-the general pattern observed should remain similar across different runs.
+ we present the execution times for two different broadcast implementations: 
+ \texttt{MPI\_Bcast} and \texttt{MY\_Bcast}. 
+Please note that individual run times might vary depending on the specific runtime environment, 
+but the general pattern observed should remain similar across different runs. 
+
+Referring to Tables \ref{tab:mpi_bcast} and \ref{tab:my_bcast}, 
+ we can see the aforementioned times for various $P$ and $N$ values.
+Here, $P$ represents processor count and $N$ dictates size of data being 
+broadcasted.
+
+As part of our exercise to ensure accuracy in measurement, 
+ we implemented a rigorous tactic to eliminate various factors that could 
+ contribute to measurement errors. 
+Specifically, for each pair of $N$ and $P$, 
+ we performed 50,000 broadcast operations using the Bcast function,
+ recorded the whole execution time, and then computed the average time. 
+This repeated procedure allowed us to smooth out any potential anomalies - 
+ such as inconsistent system performance or unexpected delays - 
+ thereby providing us with a more reliable measure of typical execution time. 
+We also add a warm-up phase before the actual measurement to ensure that 
+ the system is fully warmed up and ready to deliver consistent performance.
+
+Upon assessing the results, an intriguing pattern has surfaced. 
+When $P=4$, \texttt{MY\_Bcast} exhibits shorter execution time compared to \texttt{MPI\_Bcast}. 
+However, as $P$ increases beyond the value of 4, 
+\texttt{MPI\_Bcast} begins to outperform \texttt{MY\_Bcast}, 
+offering better performance. 
+This suggests that \texttt{MPI\_Bcast } is potentially more beneficial for larger processor 
+ counts, where it delivers improved broadcast times.
 
 \begin{table}[!htb]
-    \centering
-    \begin{tabular}{|c|c|c|c|c|}
-    \hline
-    & P = 4 & P = 7 & P = 28 & P = 37 \\
-    \hline
-    $N = 2^{10}$ & 0.000010s & 0.000059s & 0.000045s & 0.000069s \\
-    \hline
-    $N = 2^{12}$ & 0.000023s & 0.000054s & 0.000061s & 0.000063s \\
-    \hline
-    $N = 2^{14}$ & 0.000036s & 0.000057s & 0.000151s & 0.000181s \\
-    \hline
-    $N = 2^{16}$ & 0.000120s & 0.000125s & 0.000454s & 0.000526s \\
-    \hline
-    \end{tabular}
-    \caption{Execution time using \texttt{MPI\_Bcast}}
-    \end{table}
+   \centering   
+   \begin{tabular}{|c|c|c|c|c|}    
+   \hline    
+   & P = 4 & P = 7 & P = 28 & P = 37 \\   
+   \hline    
+   $N = 2^{10}$ & 0.000008s & 0.000011s & 0.000022s & 0.000026s \\   
+   \hline    
+   $N = 2^{12}$ & 0.000011s & 0.000020s & 0.000035s & 0.000045s \\  
+   \hline    
+   $N = 2^{14}$ & 0.000031s & 0.000048s & 0.000100s & 0.000143s \\   
+   \hline    
+   $N = 2^{16}$ & 0.000099s & 0.000156s & 0.000349s & 0.000564s \\   
+   \hline    
+   \end{tabular}    
+   \caption{Average Execution time using \texttt{MPI\_Bcast}}    
+   \label{tab:mpi_bcast}
+\end{table}
 
 \begin{table}[!htb]
-    \centering
-    \begin{tabular}{|c|c|c|c|c|}
-    \hline
-    & P = 4 & P = 7 & P = 28 & P = 37 \\
-    \hline
-    $N = 2^{10}$ & 0.000012s & 0.000020s & 0.000057s & 0.000086s \\
-    \hline
-    $N = 2^{12}$ & 0.000010s & 0.000024s & 0.000072s & 0.000091s \\
-    \hline
-    $N = 2^{14}$ & 0.000021s & 0.000058s & 0.000123s & 0.000145s \\
-    \hline
-    $N = 2^{16}$ & 0.000057s & 0.000165s & 0.000385s & 0.000416s \\
-    \hline
-    \end{tabular}
-    \caption{Execution time using \texttt{MY\_Bcast}}
-    \end{table}
+   \centering    
+   \begin{tabular}{|c|c|c|c|c|}    
+   \hline    
+   & P = 4 & P = 7 & P = 28 & P = 37 \\   
+   \hline    
+   $N = 2^{10}$ & 0.000007s & 0.000015s & 0.000031s & 0.000035s \\   
+   \hline    
+   $N = 2^{12}$ & 0.000010s & 0.000026s & 0.000053s & 0.000063s \\   
+   \hline    
+   $N = 2^{14}$ & 0.000022s & 0.000064s & 0.000152s & 0.000178s \\   
+   \hline    
+   $N = 2^{16}$ & 0.000065s & 0.000212s & 0.000477s & 0.000616s \\   
+   \hline    
+   \end{tabular}    
+   \caption{Average Execution time using \texttt{MY\_Bcast}}    
+   \label{tab:my_bcast}
+\end{table}
+
+
 
 \section{Analysis}
 
-Based on the empirical results obtained, 
-both \texttt{MPI\_Bcast()} and our custom implementation \texttt{MY\_Bcast()} demonstrate closely matched performance. 
-This is a significant observation given that the \texttt{MY\_Bcast()} function was optimized to operate in \(O(\log(n))\) time complexity, 
-using a binary tree approach.
+Based on the empirical results obtained,
+ both \texttt{MPI\_Bcast()} and our custom implementation
+ \texttt{MY\_Bcast()} demonstrate closely matched performance. 
+This is a significant observation given that the \texttt{MY\_Bcast()} function 
+ was optimized to operate in \(O(\log(n))\) time complexity, 
+ using a binary tree approach.
+
+Delving deeper into the specifics of the performance under different scenarios 
+ reveals some noteworthy patterns.
+When the processor count is very samll, the \texttt{MY\_Bcast()} function manages
+ to edge out the native \texttt{MPI\_Bcast()} in terms of execution time. 
+This could be attributed to the simplistic structure of the \texttt{MY\_Bcast()} function. 
+Its binary tree-based broadcasting strategy doesn't involve complex computations 
+ or arrangements for data broadcast, 
+ which could potentially give it an advantage when dealing with a 
+ smaller number of processors. 
+The reduced communication overhead and streamlined data management in 
+ these smaller settings might favor the less complicated design 
+ of \texttt{MY\_Bcast()}, thereby leading to better performance 
+ as compared to \texttt{MPI\_Bcast()}.
+
+However, as we scale up and increase the processor count beyond 4, 
+ the nature of these performance dynamics takes a noticeable shift. 
+Under these circumstances, the native \texttt{MPI\_Bcast()} function starts 
+ exhibiting superior performance over the \texttt{MY\_Bcast()}. 
+It handles the increased parallelism better and delivers faster broadcast times. 
+
+This phenomenon might be because MPI's built-in broadcast operation is 
+ highly optimized for larger processor counts, 
+ and it may employ sophisticated algorithms under the hood to 
+ manage inter-processor communication efficiently. 
+In contrast, 
+ the simplistic binary-tree approach used in \texttt{MY\_Bcast()} might
+ not scale equally well with an increasing number of processors.
 
 \section*{File Notes}
 The source code of the program is in the \texttt{project2} folder. 
